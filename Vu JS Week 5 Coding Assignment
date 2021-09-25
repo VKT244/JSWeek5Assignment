@@ -1,0 +1,140 @@
+class Movie {
+    constructor (title, director) {
+        this.title = title;
+        this.director = director;
+    }
+
+    describe() {
+        return `${this.title} was directed by ${this.director}.`;
+    }
+}
+
+class List {
+    constructor(name) {
+        this.name = name; 
+        this.movies = [];
+    }
+
+addMovie(movie){
+    if (movie instanceof Movie) {
+        this.movies.push(movie);
+    } else {
+        throw new Error(`${movie} was never produced.`);
+    }
+}
+
+describe() {
+    return `${this.name} has ${this.movies.length} movies.`;
+    }
+}
+
+class Menu {
+    constructor() {
+        this.names = [];
+        this.selectedList = null;
+    }
+
+start() {
+    let selection  = this.showMainMenuOptions();
+
+    while (selection != 0) {
+        switch (selection) {
+            case '1': 
+                this.createList();
+                break;
+            case '2':
+                this.viewList();
+                break;
+            case '3':
+                this.removeList();
+                break;
+            case '4':
+                this.displayLists();
+                break;
+            default: 
+                selection = 0;
+        }
+        selection = this.showMainMenuOptions();
+    }
+
+    alert('Bye!');
+}
+
+showMainMenuOptions() {
+    return prompt(`
+    0) Exit
+    1) Create new movie list
+    2) View movie list
+    3) Delete movie list
+    4) Display all lists
+    `);
+}
+
+showListMenuOptions(listInfo) {
+    return prompt(`
+    0) Go back
+    1) Add new movie
+    2) Delete existing movie
+    -----------------------------
+    ${listInfo}
+    `);
+}
+
+displayLists() {
+    let listString = ' ';
+    for (let i = 0; i < this.names.length; i++) {
+        listString += i + ') ' + this.names[i].name + '\n';
+    }
+    alert (listString); 
+  }
+
+  createList() {
+      let name = prompt('Enter name for new list:');
+      this.names.push(new List(name));
+  } 
+
+viewList() {
+    let index = prompt('Enter the index of the list you wish to view:');
+    if (index > -1 && index < this.names.length) {
+        this.selectedList = this.names[index];
+        let description = 'List Name: ' + this.selectedList.name + '\n';
+        
+        for (let i = 0; i < this.selectedList.movies.length; i++) {
+            description += i + ') ' + this.selectedList.movies[i].title 
+            + ' by ' + this.selectedList.movies[i].director + '\n';
+        }
+
+        let selection = this.showListMenuOptions(description);
+        switch (selection) {
+            case '1':
+                this.newMovie();
+                break; 
+            case '2':
+                this.deleteMovie();
+            }
+        }
+    }
+
+    deleteList() {
+        let index = prompt('Enter the index of the list you would like to delete:');
+        if (index > -1 && index < this.names.length) {
+            this.names.splce(index, 1);
+        }
+    }
+    
+   createMovie() {
+       let title = prompt ('Enter name for new movie:');
+       let director = prompt('Enter director for new movie:');
+       this.selectedList.movies.push(new Movie(title, director));
+   } 
+
+   deleteMovie() {
+       let index = prompt('Enter the index of the movie you would like to delete:');
+       if (index > -1 && index < this.selectedList.movies.length) {
+           this.selectedList.movies.splice(index, 1);
+       }
+   }
+}
+    
+let menu = new Menu (); 
+menu.start();
